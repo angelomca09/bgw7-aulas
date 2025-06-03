@@ -1,3 +1,14 @@
+/* Exercício 3 - Qual mês corresponde a
+
+Crie um aplicativo que receba uma variável com o número do mês.
+
+Dependendo do número, imprima o mês correspondente no texto.
+Você consegue pensar em maneiras diferentes de resolver isso? Qual delas você escolheria e por quê?
+Ex: 7, Julio.
+
+👀Observação: verifique se o número do mês está correto.
+*/
+
 package main
 
 import "fmt"
