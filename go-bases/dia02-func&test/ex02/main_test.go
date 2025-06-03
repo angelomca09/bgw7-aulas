@@ -1,3 +1,11 @@
+/*
+	Exercício 2 - Calcular a média
+
+A escola relatou que as operações para calcular a média não estão sendo realizadas corretamente, portanto, agora
+somos obrigados a realizar os testes correspondentes:
+
+- Calcular a média das notas dos alunos.
+*/
 package main
 
 import (

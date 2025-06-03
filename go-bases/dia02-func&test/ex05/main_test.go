@@ -1,3 +1,20 @@
+/* Exercício 5 - Calcular a quantidade de alimentos
+
+O abrigo de animais enviou uma reclamação porque o cálculo total de alimentos a serem comprados não estava correto e
+eles compraram menos alimentos do que precisavam. Para manter nosso cliente satisfeito, teremos de realizar os testes
+necessários para verificar se tudo está funcionando corretamente:
+
+- Verifique o cálculo da quantidade de alimento para cães.
+- Verifique o cálculo da quantidade de alimento para gatos.
+- Verifique o cálculo da quantidade de alimento para hamsters.
+- Verifique o cálculo da quantidade de alimento para tarântulas.
+
+Exemplo:
+
+func TestDog(t *testing.T)
+func TestCat(t *testing.T)
+*/
+
 package main
 
 import (

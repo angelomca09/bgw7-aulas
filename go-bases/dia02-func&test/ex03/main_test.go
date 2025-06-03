@@ -1,3 +1,13 @@
+/* Exercício 3 - Teste de salário
+
+A empresa marítima não concorda com os resultados obtidos nos cálculos salariais e, por isso, pede que realizemos
+uma série de testes em nosso programa. Precisaremos realizar os seguintes testes em nosso código:
+
+- Calcule o salário da categoria "A".
+- Calcule o salário da categoria "B".
+- Calcule o salário da categoria "C".
+*/
+
 package main
 
 import (

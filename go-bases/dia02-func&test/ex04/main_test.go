@@ -1,3 +1,14 @@
+/* Exercício 4 - Testando o cálculo de estatísticas
+
+Os professores da universidade colombiana participaram do programa de análise de dados do Google, que premia os
+melhores estatísticos da região. Portanto, os professores nos pediram para verificar o funcionamento correto
+de nossos cálculos estatísticos. A tarefa a seguir é solicitada:
+
+- Realize um teste para calcular o número mínimo de notas.
+- Realize um teste para calcular o número máximo de notas.
+- Realize um teste para calcular o número médio de notas.
+*/
+
 package main
 
 import (
