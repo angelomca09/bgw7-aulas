@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+func ValidateEmptyProduct(p *internal.ProductAttributes) error {
+	if p.Name == "" || p.Quantity == 0 || p.Price == 0 ||
+		p.CodeValue == "" || p.Expiration == "" {
+		return fmt.Errorf("Invalid Values")
+	}
+	return nil
+}
+
 func ValidateCodeValue(cv string, prs []*internal.Product) error {
 	if cv == "" {
 		return fmt.Errorf("CodeValue is empty")
