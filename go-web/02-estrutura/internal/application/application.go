@@ -26,7 +26,7 @@ func NewApplication() *Application {
 }
 
 func (a *Application) CreateHandlers() {
-	prodRepo := repository.NewProductJSONRepository()
+	prodRepo := repository.NewProductJSONRepository("docs/db/products.json")
 	prodService := service.NewProductService(prodRepo)
 	prodHandler := handler.NewProductHandler(prodService)
 

@@ -10,26 +10,24 @@ import (
 )
 
 type ProductJSONRepository struct {
-	filePath string
 	products map[int]*internal.ProductAttributes
 	lastId   int
 }
 
-func NewProductJSONRepository() internal.ProductRepository {
+func NewProductJSONRepository(filePath string) internal.ProductRepository {
 	repo := &ProductJSONRepository{
-		"docs/db/products.json",
 		make(map[int]*internal.ProductAttributes),
 		0,
 	}
 
-	repo.initialize_Decoder()
+	repo.initialize_Decoder(filePath)
 
 	return repo
 }
 
-func (r *ProductJSONRepository) initialize() {
+func (r *ProductJSONRepository) initialize(filePath string) {
 
-	file, err := os.Open(r.filePath)
+	file, err := os.Open(filePath)
 	if err != nil {
 		panic(err)
 	}
@@ -53,8 +51,8 @@ func (r *ProductJSONRepository) initialize() {
 	}
 }
 
-func (r *ProductJSONRepository) initialize_Decoder() {
-	file, err := os.Open(r.filePath)
+func (r *ProductJSONRepository) initialize_Decoder(filePath string) {
+	file, err := os.Open(filePath)
 	if err != nil {
 		panic(err)
 	}
