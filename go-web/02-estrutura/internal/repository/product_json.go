@@ -145,3 +145,21 @@ func (r *ProductJSONRepository) Delete(id int) error {
 
 	return nil
 }
+
+func (r *ProductJSONRepository) GetProductsByList(idList []int) ([]*internal.Product, error) {
+	if len(idList) == 0 {
+		products, _ := r.GetAll()
+		return products, nil
+	}
+
+	prodList := make([]*internal.Product, 0)
+	for _, id := range idList {
+		attr, ok := r.products[id]
+		if !ok {
+			err := fmt.Errorf("%s: %d", "Product not found", id)
+			return make([]*internal.Product, 0), err
+		}
+		prodList = append(prodList, &internal.Product{ID: id, ProductAttributes: *attr})
+	}
+	return prodList, nil
+}

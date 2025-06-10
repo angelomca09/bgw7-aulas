@@ -3,6 +3,7 @@ package service
 import (
 	"estrutura-api/internal"
 	"estrutura-api/internal/utils"
+	"fmt"
 )
 
 type ProductsService struct {
@@ -29,7 +30,16 @@ func (p *ProductsService) GetByID(id int) (*internal.Product, error) {
 
 func (p *ProductsService) Create(product *internal.ProductAttributes) (*internal.Product, error) {
 
-	if err := p.validateProduct(product); err != nil {
+	if err := utils.ValidateEmptyProduct(product); err != nil {
+		return nil, err
+	}
+
+	prs, _ := p.GetAll()
+	if err := utils.ValidateCodeValue(product.CodeValue, prs); err != nil {
+		return nil, err
+	}
+
+	if err := utils.ValidateExpiration(product.Expiration); err != nil {
 		return nil, err
 	}
 
@@ -37,7 +47,19 @@ func (p *ProductsService) Create(product *internal.ProductAttributes) (*internal
 }
 
 func (p *ProductsService) Update(id int, product *internal.Product) (*internal.Product, error) {
-	if err := p.validateProduct(&product.ProductAttributes); err != nil {
+	originalProduct, err := p.repository.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if product.CodeValue != originalProduct.CodeValue {
+		prs, _ := p.GetAll()
+		if err := utils.ValidateCodeValue(product.CodeValue, prs); err != nil {
+			return nil, err
+		}
+	}
+
+	if err := utils.ValidateExpiration(product.Expiration); err != nil {
 		return nil, err
 	}
 
@@ -45,7 +67,21 @@ func (p *ProductsService) Update(id int, product *internal.Product) (*internal.P
 }
 
 func (p *ProductsService) UpdateOrCreate(product *internal.Product) (*internal.Product, error) {
-	if err := p.validateProduct(&product.ProductAttributes); err != nil {
+
+	if err := utils.ValidateEmptyProduct(&product.ProductAttributes); err != nil {
+		return nil, err
+	}
+
+	originalProduct, _ := p.repository.GetByID(product.ID)
+
+	prs, _ := p.GetAll()
+	if err := utils.ValidateCodeValue(product.CodeValue, prs); err != nil {
+		if originalProduct == nil || product.CodeValue != originalProduct.CodeValue {
+			return nil, err
+		}
+	}
+
+	if err := utils.ValidateExpiration(product.Expiration); err != nil {
 		return nil, err
 	}
 
@@ -57,14 +93,32 @@ func (p *ProductsService) Delete(id int) error {
 	return err
 }
 
-func (p *ProductsService) validateProduct(product *internal.ProductAttributes) error {
-	prs, _ := p.GetAll()
-	if err := utils.ValidateCodeValue(product.CodeValue, prs); err != nil {
-		return err
+func (p *ProductsService) GetTotalPriceByList(idList []int) ([]*internal.Product, float64, error) {
+	totalPrice := 0.0
+	askedList, err := p.repository.GetProductsByList(idList)
+	if err != nil {
+		return make([]*internal.Product, 0), 0.0, err
 	}
 
-	if err := utils.ValidateExpiration(product.Expiration); err != nil {
-		return err
+	qntPerId := make(map[int]int, 0)
+	for _, askedPr := range askedList {
+		qntPerId[askedPr.ID] += 1
+		if askedPr.Quantity < qntPerId[askedPr.ID] {
+			return make([]*internal.Product, 0), 0.0, fmt.Errorf("Can not add more than there is in stock")
+		}
+		totalPrice += askedPr.Price
 	}
-	return nil
+
+	taxes := 1.21 // taxes for less than 10 products - 21%
+	qntProd := len(askedList)
+	switch {
+	case qntProd > 10 && qntProd <= 20: // from 10 to 20 products - 17%
+		taxes = 1.17
+	case qntProd > 20: // more than 20 - 15%
+		taxes = 1.15
+	}
+
+	totalPrice *= taxes
+
+	return askedList, totalPrice, nil
 }

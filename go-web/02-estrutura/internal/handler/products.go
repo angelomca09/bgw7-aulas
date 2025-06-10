@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"estrutura-api/internal"
 	"estrutura-api/platform/web/request"
 	"estrutura-api/platform/web/response"
@@ -58,12 +59,6 @@ func (hd *ProductHandler) Create() http.HandlerFunc {
 		err := request.JSON(r, reqBody)
 		if err != nil {
 			response.Error(w, http.StatusBadRequest, "Invalid body")
-			return
-		}
-
-		if reqBody.Name == "" || reqBody.Quantity == 0 || reqBody.Price == 0 ||
-			reqBody.CodeValue == "" || reqBody.Expiration == "" {
-			response.Error(w, http.StatusUnprocessableEntity, "Invalid values")
 			return
 		}
 
@@ -162,5 +157,35 @@ func (hd *ProductHandler) Delete() http.HandlerFunc {
 		}
 
 		response.Text(w, http.StatusOK, "Product removed")
+	}
+}
+
+func (hd *ProductHandler) GetTotalPriceByList() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		listString := r.URL.Query().Get("list")
+		var list []int
+
+		if listString != "" {
+			err := json.Unmarshal([]byte(listString), &list)
+			if err != nil {
+				response.Error(w, http.StatusBadGateway, err.Error())
+				return
+			}
+		}
+
+		prodList, totalPrice, err := hd.service.GetTotalPriceByList(list)
+		if err != nil {
+			response.Error(w, http.StatusBadGateway, err.Error())
+		}
+
+		body := struct {
+			ProdList   []*internal.Product `json:"prodList"`
+			TotalPrice float64             `json:"total_price"`
+		}{
+			ProdList:   prodList,
+			TotalPrice: totalPrice,
+		}
+
+		response.JSON(w, http.StatusOK, body)
 	}
 }

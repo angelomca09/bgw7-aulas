@@ -14,5 +14,6 @@ func ConfigProductRoutes(hd handler.ProductHandler, r chi.Router) {
 		r.Put("/{id}", hd.UpdateOrCreate())
 		r.Patch("/{id}", hd.Update())
 		r.Delete("/{id}", hd.Delete())
+		r.Get("/consumer_price", hd.GetTotalPriceByList())
 	})
 }

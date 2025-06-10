@@ -7,4 +7,5 @@ type ProductRepository interface {
 	Update(id int, product *Product) (*Product, error)
 	UpdateOrCreate(product *Product) (*Product, error)
 	Delete(id int) error
+	GetProductsByList(idList []int) ([]*Product, error)
 }
