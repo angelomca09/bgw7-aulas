@@ -1,40 +1,20 @@
 package application
 
 import (
+	"estrutura-api/config"
 	"estrutura-api/internal/application/routes"
-	"estrutura-api/internal/handler"
-	"estrutura-api/internal/repository"
-	"estrutura-api/internal/service"
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
 )
 
 type Application struct {
-	Router         http.Handler
-	productHandler *handler.ProductHandler
+	Router http.Handler
 }
 
 func NewApplication() *Application {
-	app := &Application{}
-	rt := chi.NewRouter()
+	config.Init()
 
-	app.CreateHandlers()
-	app.CreateRoutes(rt)
+	app := &Application{}
+	app.Router = routes.NewRouter().MapRoutes()
 
 	return app
-}
-
-func (a *Application) CreateHandlers() {
-	prodRepo := repository.NewProductJSONRepository("docs/db/products.json")
-	prodService := service.NewProductService(prodRepo)
-	prodHandler := handler.NewProductHandler(prodService)
-
-	a.productHandler = prodHandler
-}
-
-func (a *Application) CreateRoutes(r chi.Router) {
-	routes.ConfigProductRoutes(*a.productHandler, r)
-
-	a.Router = r
 }

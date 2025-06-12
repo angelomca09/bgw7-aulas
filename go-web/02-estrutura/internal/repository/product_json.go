@@ -25,6 +25,14 @@ func NewProductJSONRepository(filePath string) internal.ProductRepository {
 	return repo
 }
 
+func NewProductJSONRepositoryWithMap(prods map[int]*internal.ProductAttributes) internal.ProductRepository {
+	repo := &ProductJSONRepository{
+		prods,
+		len(prods),
+	}
+	return repo
+}
+
 func (r *ProductJSONRepository) initialize(filePath string) {
 
 	file, err := os.Open(filePath)

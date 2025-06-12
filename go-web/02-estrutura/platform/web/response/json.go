@@ -21,9 +21,6 @@ func JSON(w http.ResponseWriter, code int, body any) {
 		return
 	}
 
-	// set header
-	w.Header().Set("Content-Type", "application/json")
-
 	// set status code
 	w.WriteHeader(code)
 
