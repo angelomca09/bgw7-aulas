@@ -1,5 +1,7 @@
 package service
 
+import "app/internal/repository"
+
 // ServiceTicketDefault represents the default service of the tickets
 type ServiceTicketDefault struct {
 	// rp represents the repository of the tickets

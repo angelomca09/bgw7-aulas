@@ -1,6 +1,9 @@
 package repository
 
-import "context"
+import (
+	"app/internal"
+	"context"
+)
 
 // NewRepositoryTicketMap creates a new repository for tickets in a map
 func NewRepositoryTicketMap(dbFile string, lastId int) *RepositoryTicketMap {
@@ -44,4 +47,3 @@ func (r *RepositoryTicketMap) GetTicketsByDestinationCountry(ctx context.Context
 
 	return
 }
-

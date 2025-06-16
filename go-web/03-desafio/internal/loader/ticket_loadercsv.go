@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"app/internal"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -40,7 +41,7 @@ func (t *LoaderTicketCSV) Load() (t map[int]internal.TicketAttributes, err error
 			if err == io.EOF {
 				break
 			}
-		
+
 			err = fmt.Errorf("error reading record: %v", err)
 			return
 		}
@@ -48,11 +49,11 @@ func (t *LoaderTicketCSV) Load() (t map[int]internal.TicketAttributes, err error
 		// serialize the record
 		id := record[0]
 		ticket := internal.TicketAttributes{
-			Name: record[1].(string),
-			Email: record[2].(string),
+			Name:    record[1].(string),
+			Email:   record[2].(string),
 			Country: record[3].(string),
-			Hour: record[4].(string),
-			Price: record[5].(int),
+			Hour:    record[4].(string),
+			Price:   record[5].(int),
 		}
 
 		// add the ticket to the map
@@ -61,8 +62,3 @@ func (t *LoaderTicketCSV) Load() (t map[int]internal.TicketAttributes, err error
 
 	return
 }
-
-
-	
-	
-

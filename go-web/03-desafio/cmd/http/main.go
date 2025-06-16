@@ -1,6 +1,8 @@
 package main
 
 import (
+	"app/internal/loader"
+	"app/internal/repository"
 	"fmt"
 	"net/http"
 	"os"
@@ -58,7 +60,7 @@ func NewApplicationDefault(cfg *ConfigAppDefault) *ApplicationDefault {
 		if cfg.DbFile != "" {
 			defaultConfig.DbFile = cfg.DbFile
 		}
-	}			
+	}
 
 	return &ApplicationDefault{
 		rt:         defaultRouter,
@@ -66,7 +68,6 @@ func NewApplicationDefault(cfg *ConfigAppDefault) *ApplicationDefault {
 		dbFile:     defaultConfig.DbFile,
 	}
 }
-
 
 // ApplicationDefault represents the default application
 type ApplicationDefault struct {
@@ -78,11 +79,10 @@ type ApplicationDefault struct {
 	dbFile string
 }
 
-
 // SetUp sets up the application
 func (a *ApplicationDefault) SetUp() (err error) {
 	// dependencies
-	db, err := loader.NewLoaderTicketCSV(a.dbFile)
+	db, err := loader.NewLoaderTicketCSV(a.dbFile).Load()
 	if err != nil {
 		return
 	}
@@ -96,7 +96,7 @@ func (a *ApplicationDefault) SetUp() (err error) {
 		w.Header().Set("Content-Type", "text/plain")
 		w.Write([]byte("OK"))
 	})
-	
+
 	return
 }
 
