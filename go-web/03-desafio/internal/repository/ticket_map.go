@@ -3,12 +3,14 @@ package repository
 import (
 	"app/internal"
 	"context"
+	"fmt"
+	"strings"
 )
 
 // NewRepositoryTicketMap creates a new repository for tickets in a map
-func NewRepositoryTicketMap(dbFile string, lastId int) *RepositoryTicketMap {
+func NewRepositoryTicketMap(db map[int]internal.TicketAttributes, lastId int) *RepositoryTicketMap {
 	return &RepositoryTicketMap{
-		dbFile: dbFile,
+		db:     db,
 		lastId: lastId,
 	}
 }
@@ -32,6 +34,10 @@ func (r *RepositoryTicketMap) Get(ctx context.Context) (t map[int]internal.Ticke
 		t[k] = v
 	}
 
+	if len(t) == 0 {
+		err = fmt.Errorf("No Tickets found.")
+	}
+
 	return
 }
 
@@ -40,9 +46,13 @@ func (r *RepositoryTicketMap) GetTicketsByDestinationCountry(ctx context.Context
 	// create a copy of the map
 	t = make(map[int]internal.TicketAttributes)
 	for k, v := range r.db {
-		if v.Country == country {
+		if strings.EqualFold(country, v.Country) {
 			t[k] = v
 		}
+	}
+
+	if len(t) == 0 {
+		err = fmt.Errorf("No Tickets found.")
 	}
 
 	return

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"app/cmd/http/handler"
 	"app/internal/loader"
 	"app/internal/repository"
+	"app/internal/service"
 	"fmt"
 	"net/http"
 	"os"
@@ -51,7 +53,7 @@ func NewApplicationDefault(cfg *ConfigAppDefault) *ApplicationDefault {
 	defaultRouter := chi.NewRouter()
 	defaultConfig := &ConfigAppDefault{
 		ServerAddr: ":8080",
-		DbFile:     "",
+		DbFile:     "docs/db/tickets.csv",
 	}
 	if cfg != nil {
 		if cfg.ServerAddr != "" {
@@ -86,15 +88,23 @@ func (a *ApplicationDefault) SetUp() (err error) {
 	if err != nil {
 		return
 	}
-	rp := repository.NewRepositoryTicketMap(db)
+	rp := repository.NewRepositoryTicketMap(db, len(db))
 	// service ...
+	sv := service.NewServiceTicketDefault(rp)
 	// handler ...
+	hd := handler.NewTicketsHandlerDefault(sv)
 
 	// routes
 	(*a).rt.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "text/plain")
 		w.Write([]byte("OK"))
+	})
+
+	(*a).rt.Route("/ticket", func(r chi.Router) {
+		r.Get("/", hd.GetAllTickets())
+		r.Get("/getByCountry/{dest}", hd.GetTicketsByCountry())
+		r.Get("/getAverage/{dest}", hd.GetAverageTicketsByCountry())
 	})
 
 	return
