@@ -39,6 +39,29 @@ type ProductJSON struct {
 	WarehouseId int     `json:"warehouse_id"`
 }
 
+// GetAll gets all products.
+func (h *HandlerProduct) GetAll() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+
+		// process
+		// - find product by id
+		p, err := h.rp.FindAll()
+		if err != nil {
+			fmt.Println("error: ", err.Error())
+			response.JSON(w, http.StatusInternalServerError, "internal server error")
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    p,
+		})
+	}
+}
+
 // GetById gets a product by id.
 func (h *HandlerProduct) GetById() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

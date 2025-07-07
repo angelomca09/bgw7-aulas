@@ -26,6 +26,28 @@ type HandlerWarehouse struct {
 	rp internal.RepositoryWarehouse
 }
 
+// GetAll gets all warehouses.
+func (h *HandlerWarehouse) GetAll() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		//...
+
+		// process
+		// - find warehouse by id
+		wa, err := h.rp.FindAll()
+		if err != nil {
+			fmt.Println("error: ", err.Error())
+			response.JSON(w, http.StatusInternalServerError, "internal server error")
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    wa,
+		})
+	}
+}
+
 // GetById gets a warehouse by id.
 func (h *HandlerWarehouse) GetById() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

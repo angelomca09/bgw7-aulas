@@ -14,6 +14,8 @@ type QuantityByWarehouse struct {
 
 // RepositoryProduct is an interface that contains the methods for a product repository
 type RepositoryProduct interface {
+	// FindAll returns all products
+	FindAll() (p []Product, err error)
 	// FindById returns a product by its id
 	FindById(id int) (p Product, err error)
 	// Save saves a product

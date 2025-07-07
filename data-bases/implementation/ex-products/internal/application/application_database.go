@@ -58,6 +58,8 @@ func (a *ApplicationDatabase) SetUp() (err error) {
 	a.rt.Use(middleware.Recoverer)
 	// - endpoints
 	a.rt.Route("/products", func(r chi.Router) {
+		// GET /products
+		r.Get("/", hd.GetAll())
 		// GET /products/{id}
 		r.Get("/{id}", hd.GetById())
 		// POST /products
@@ -71,6 +73,8 @@ func (a *ApplicationDatabase) SetUp() (err error) {
 	})
 
 	a.rt.Route("/warehouses", func(r chi.Router) {
+		// GET /warehouses/
+		r.Get("/", whd.GetAll())
 		// GET /warehouses/{id}
 		r.Get("/{id}", whd.GetById())
 		// POST /warehouses

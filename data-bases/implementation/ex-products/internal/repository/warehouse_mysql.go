@@ -15,6 +15,33 @@ func NewRepositoryWarehouseMysql(db *sql.DB) internal.RepositoryWarehouse {
 	}
 }
 
+// FindAll implements internal.RepositoryWarehouse.
+func (m *mysqlRepositoryWarehouse) FindAll() (w_list []internal.Warehouse, err error) {
+	rows, err := m.db.Query(GetAllWarehousesQuery)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var item internal.Warehouse
+		if err := rows.Scan(&item.Id, &item.Name, &item.Address, &item.Telephone, &item.Capacity); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, internal.ErrRepositoryWarehouseNotFound
+			}
+
+			return nil, err
+		}
+		w_list = append(w_list, item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return w_list, nil
+}
+
 // FindById implements internal.RepositoryWarehouse.
 func (m *mysqlRepositoryWarehouse) FindById(id int) (p internal.Warehouse, err error) {
 	row := m.db.QueryRow(GetOneWarehouseQuery, id)

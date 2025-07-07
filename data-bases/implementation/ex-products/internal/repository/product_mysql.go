@@ -18,6 +18,45 @@ func NewRepositoryProductMysql(db *sql.DB) internal.RepositoryProduct {
 	}
 }
 
+// FindAll implements internal.RepositoryProduct.
+func (m *mysqlRepository) FindAll() (p_list []internal.Product, err error) {
+	rows, err := m.db.Query(GetAllProductsQuery)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var expirationStr sql.NullString
+		var item internal.Product
+		if err := rows.Scan(&item.Id, &item.Name, &item.Quantity, &item.CodeValue, &item.IsPublished, &expirationStr, &item.Price, &item.WarehouseId); err != nil {
+			if err == sql.ErrNoRows {
+				return nil, internal.ErrRepositoryProductNotFound
+			}
+
+			return nil, err
+		}
+
+		// Parse the expiration date string to time.Time
+		if expirationStr.Valid {
+			if parsedTime, parseErr := time.Parse("2006-01-02 15:04:05", expirationStr.String); parseErr == nil {
+				item.Expiration = parsedTime
+			} else if parsedTime, parseErr := time.Parse("2006-01-02", expirationStr.String); parseErr == nil {
+				item.Expiration = parsedTime
+			}
+			// If parsing fails, Expiration remains zero value
+		}
+
+		p_list = append(p_list, item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return p_list, nil
+}
+
 // FindById implements internal.RepositoryProduct.
 func (m *mysqlRepository) FindById(id int) (p internal.Product, err error) {
 	row := m.db.QueryRow(GetOneProductQuery, id)
