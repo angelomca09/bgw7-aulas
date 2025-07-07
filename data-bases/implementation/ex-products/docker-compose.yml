@@ -12,6 +12,7 @@ services:
         volumes:
             - ./docs/db/sql/build_database.sql:/docker-entrypoint-initdb.d/build_database.sql
             - ./docs/db/sql/warehouses.sql:/docker-entrypoint-initdb.d/warehouses.sql
+            - ./docs/db/sql/test.sql:/docker-entrypoint-initdb.d/test.sql
             - db-data:/var/lib/mysql
 volumes:
     db-data:
