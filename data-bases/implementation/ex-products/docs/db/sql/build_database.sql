@@ -5,11 +5,11 @@ DROP USER IF EXISTS 'user1'@'localhost';
 CREATE USER 'user1'@'localhost' IDENTIFIED BY 'secret_password';
 GRANT ALL PRIVILEGES ON *.* TO 'user1'@'localhost';
 -- 
-CREATE DATABASE  IF NOT EXISTS `my_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `my_db`;
+CREATE DATABASE  IF NOT EXISTS `products_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `products_db`;
 -- MySQL dump 10.13  Distrib 8.0.25, for Linux (x86_64)
 --
--- Host: localhost    Database: my_db
+-- Host: localhost    Database: products_db
 -- ------------------------------------------------------
 -- Server version	8.0.29-0ubuntu0.20.04.3
 
@@ -37,7 +37,7 @@ CREATE TABLE `products` (
   `quantity` int DEFAULT NULL,
   `code_value` varchar(50) DEFAULT NULL,
   `is_published` varchar(50) DEFAULT NULL,
-  `expiration` varchar(10) DEFAULT NULL,
+  `expiration` date DEFAULT NULL,
   `price` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

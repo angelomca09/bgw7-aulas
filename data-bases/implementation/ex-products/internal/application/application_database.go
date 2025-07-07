@@ -59,8 +59,6 @@ func (a *ApplicationDatabase) SetUp() (err error) {
 		r.Get("/{id}", hd.GetById())
 		// POST /products
 		r.Post("/", hd.Create())
-		// PUT /products/{id}
-		r.Put("/{id}", hd.UpdateOrCreate())
 		// PATCH /products/{id}
 		r.Patch("/{id}", hd.Update())
 		// DELETE /products/{id}

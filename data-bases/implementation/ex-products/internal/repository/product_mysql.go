@@ -24,7 +24,7 @@ func (m *mysqlRepository) FindById(id int) (p internal.Product, err error) {
 	}
 
 	var expirationStr sql.NullString
-	if err := row.Scan(&p.Id, &p.Name, &p.Quantity, &p.CodeValue, &p.IsPublished, &expirationStr, &p.Price); err != nil {
+	if err := row.Scan(&p.Id, &p.Name, &p.Quantity, &p.CodeValue, &p.IsPublished, &expirationStr, &p.Price, &p.WarehouseId); err != nil {
 
 		if err == sql.ErrNoRows {
 			return p, internal.ErrRepositoryProductNotFound
@@ -49,7 +49,7 @@ func (m *mysqlRepository) FindById(id int) (p internal.Product, err error) {
 
 // Save implements internal.RepositoryProduct.
 func (m *mysqlRepository) Save(p *internal.Product) (err error) {
-	result, err := m.db.Exec(StoreProductQuery, p.Name, p.Quantity, p.CodeValue, p.IsPublished, p.Expiration, p.Price)
+	result, err := m.db.Exec(StoreProductQuery, p.Name, p.Quantity, p.CodeValue, p.IsPublished, p.Expiration, p.Price, p.WarehouseId)
 	if err != nil {
 		return err
 	}
@@ -63,14 +63,9 @@ func (m *mysqlRepository) Save(p *internal.Product) (err error) {
 	return nil
 }
 
-// UpdateOrSave implements internal.RepositoryProduct.
-func (m *mysqlRepository) UpdateOrSave(p *internal.Product) (err error) {
-	panic("unimplemented")
-}
-
 // Update implements internal.RepositoryProduct.
 func (m *mysqlRepository) Update(p *internal.Product) (err error) {
-	_, err = m.db.Exec(UpdateProductQuery, p.Name, p.Quantity, p.CodeValue, p.IsPublished, p.Expiration, p.Price, p.Id)
+	_, err = m.db.Exec(UpdateProductQuery, p.Name, p.Quantity, p.CodeValue, p.IsPublished, p.Expiration, p.Price, p.WarehouseId, p.Id)
 	if err != nil {
 		return err
 	}

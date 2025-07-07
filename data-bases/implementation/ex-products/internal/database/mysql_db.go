@@ -10,7 +10,7 @@ import (
 var db *sql.DB
 
 func Initialize() (err error) {
-	db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/my_db")
+	db, err = sql.Open("mysql", "root:root@tcp(localhost:3306)/products_db")
 	if err != nil {
 		return err
 	}
