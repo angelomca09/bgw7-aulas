@@ -1,0 +1,16 @@
+services:
+    db:
+        image: mysql:8
+        container_name: products
+        restart: always
+        environment:
+            - MYSQL_DATABASE=products_db
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_ROOT_HOST=%
+        ports:
+            - 3306:3306
+        volumes:
+            - ./docs/db/sql/build_database.sql:/docker-entrypoint-initdb.d/build_database.sql
+            - db-data:/var/lib/mysql
+volumes:
+    db-data:
