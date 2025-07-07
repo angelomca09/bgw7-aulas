@@ -7,6 +7,11 @@ var (
 	ErrRepositoryProductNotFound = errors.New("repository: product not found")
 )
 
+type QuantityByWarehouse struct {
+	Name     string `json:"name"`
+	Quantity int    `json:"quantity"`
+}
+
 // RepositoryProduct is an interface that contains the methods for a product repository
 type RepositoryProduct interface {
 	// FindById returns a product by its id
@@ -17,4 +22,6 @@ type RepositoryProduct interface {
 	Update(p *Product) (err error)
 	// Delete deletes a product
 	Delete(id int) (err error)
+	// GetTotalQuantityByWarehouse returns the total quantity of products by warehouse
+	GetTotalQuantityByWarehouse(id int) (m []QuantityByWarehouse, err error)
 }

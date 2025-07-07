@@ -255,3 +255,26 @@ func (h *HandlerProduct) Delete() http.HandlerFunc {
 		response.JSON(w, http.StatusNoContent, nil)
 	}
 }
+
+// GetTotalQuantityByWarehouse returns a list of products quantity by warehouse.
+func (h *HandlerProduct) GetTotalQuantityByWarehouse() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+
+		// process
+		// - find product by id
+		list, err := h.rp.GetTotalQuantityByWarehouse(id)
+		if err != nil {
+			fmt.Println("error: ", err.Error())
+			response.JSON(w, http.StatusInternalServerError, "internal server error")
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    list,
+		})
+	}
+}

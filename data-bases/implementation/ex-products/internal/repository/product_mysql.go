@@ -3,6 +3,8 @@ package repository
 import (
 	"app/internal"
 	"database/sql"
+	"fmt"
+	"log"
 	"time"
 )
 
@@ -81,4 +83,37 @@ func (m *mysqlRepository) Delete(id int) (err error) {
 	}
 
 	return nil
+}
+
+// GetTotalQuantityByWarehouse implements internal.RepositoryProduct.
+func (m *mysqlRepository) GetTotalQuantityByWarehouse(id int) (list []internal.QuantityByWarehouse, err error) {
+
+	querry := GetInnerJoinProductWarehouseQuery
+
+	log.Println("id: ", id)
+	if id != 0 {
+		querry += fmt.Sprintf(" WHERE w.id = %d", id)
+	} else {
+		querry += " GROUP BY w.id ORDER BY w.id"
+	}
+
+	rows, err := m.db.Query(querry)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var item internal.QuantityByWarehouse
+		if err := rows.Scan(&item.Name, &item.Quantity); err != nil {
+			return nil, err
+		}
+		list = append(list, item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return list, nil
 }

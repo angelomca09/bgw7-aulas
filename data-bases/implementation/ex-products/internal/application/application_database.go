@@ -49,6 +49,9 @@ func (a *ApplicationDatabase) SetUp() (err error) {
 	// - handler
 	hd := handler.NewHandlerProduct(rp)
 
+	wrp := repository.NewRepositoryWarehouseMysql(db)
+	whd := handler.NewHandlerWarehouse(wrp)
+
 	// router
 	// - middlewares
 	a.rt.Use(middleware.Logger)
@@ -63,6 +66,15 @@ func (a *ApplicationDatabase) SetUp() (err error) {
 		r.Patch("/{id}", hd.Update())
 		// DELETE /products/{id}
 		r.Delete("/{id}", hd.Delete())
+		// GET warehouse/reportProducts
+		r.Get("/warehouse/reportProducts", hd.GetTotalQuantityByWarehouse())
+	})
+
+	a.rt.Route("/warehouses", func(r chi.Router) {
+		// GET /warehouses/{id}
+		r.Get("/{id}", whd.GetById())
+		// POST /warehouses
+		r.Post("/", whd.Create())
 	})
 
 	return
