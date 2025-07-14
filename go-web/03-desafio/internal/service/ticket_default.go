@@ -30,6 +30,7 @@ func (s *ServiceTicketDefault) GetTicketsByDestinationCountry(country string) (t
 // GetTotalTickets returns the total number of tickets
 func (s *ServiceTicketDefault) GetTotalAmountTickets() (total int, err error) {
 	tickets, err := s.rp.Get(nil)
+    // CR1 - err não é tratado antes de usar "tickets', poderia causar panic caso tickets for nil
 	total = len(tickets)
 	return
 }
@@ -37,6 +38,7 @@ func (s *ServiceTicketDefault) GetTotalAmountTickets() (total int, err error) {
 // GetTicketsAmountByDestinationCountry returns the amount of tickets filtered by destination country
 func (s *ServiceTicketDefault) GetTicketsAmountByDestinationCountry(country string) (total int, err error) {
 	tickets, err := s.rp.GetTicketsByDestinationCountry(nil, country)
+    // CR2 - err não é tratado antes de usar "tickets', poderia causar panic caso tickets for nil
 	total = len(tickets)
 	return
 }
@@ -47,6 +49,7 @@ func (s *ServiceTicketDefault) GetPercentageTicketsByDestinationCountry(country 
 	if err != nil {
 		return
 	}
+    // CR3 - Aqui não estamos tratado caso total seja zero, pode causar divisão por zero que daria um falso/positivo.
 	countryAmount, err := s.GetTicketsAmountByDestinationCountry(country)
 	if err != nil {
 		return
