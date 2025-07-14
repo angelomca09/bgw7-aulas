@@ -3,8 +3,10 @@ package main
 import (
 	"app/internal/application"
 	"fmt"
+	"os"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -13,15 +15,19 @@ func main() {
 
 	// app
 	// - config
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("No .env file found, using system environment variables")
+	}
+
 	cfg := &application.ConfigApplicationDefault{
 		Db: &mysql.Config{
-			User:                 "root",
-			Passwd:               "",
-			Net:                  "tcp",
-			Addr:                 "localhost:3306",
-			DBName:               "fantasy_products",
+			User:   getEnv("DB_USER", ""),
+			Passwd: getEnv("DB_PASSWORD", ""),
+			Net:    "tcp",
+			Addr:   fmt.Sprintf("%s:%s", getEnv("DB_HOST", ""), getEnv("DB_PORT", "")),
+			DBName: getEnv("DB_NAME", ""),
 		},
-		Addr: "127.0.0.1:8080",
+		Addr: fmt.Sprintf("%s:%s", getEnv("HOST", ""), getEnv("PORT", "8080")),
 	}
 	app := application.NewApplicationDefault(cfg)
 	// - set up
@@ -36,4 +42,11 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+}
+
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return fallback
 }

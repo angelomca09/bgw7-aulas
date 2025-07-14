@@ -1,0 +1,56 @@
+services:
+  app:
+      env_file:
+        - .env
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: api
+      volumes:
+        - .:/app
+      ports:
+        - '8080:${PORT}'
+      depends_on:
+        db:
+          condition: service_healthy
+      environment:
+        - DB_HOST=${DB_HOST}
+        - DB_PORT=${DB_PORT}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_NAME=${DB_NAME}
+        - PORT=${PORT}
+        - HOST=${HOST}
+      networks:
+      - desafio-implementation
+
+  db:
+    image: mysql/mysql-server:8.0.32-1.2.11-server
+    container_name: database
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_HOST=%
+    ports:
+      - '3306:${DB_PORT}'
+    volumes:
+      - volumes:/var/lib/mysql
+      - ./docs/db/mysql/database.sql:/docker-entrypoint-initdb.d/database.sql
+      - ./docs/db/mysql/data.sql:/docker-entrypoint-initdb.d/data.sql
+    networks:
+      - desafio-implementation
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  volumes:
+    driver: local
+  portainer_data:
+
+networks:
+  desafio-implementation:
+    driver: bridge
