@@ -40,7 +40,7 @@ func (hd *TicketHandlerDefault) GetAllTickets() http.HandlerFunc {
 func (hd *TicketHandlerDefault) GetTicketsByCountry() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		country := chi.URLParam(r, "dest")
-
+		// CR1 - Aqui poderiamos adionar uma validacao para verificar se o parâmetro 'dest' está vazio ou inválido?
 		tickets, err := hd.service.GetTicketsByDestinationCountry(country)
 		if err != nil {
 			response.Error(w, http.StatusNotFound, err.Error())
@@ -60,7 +60,7 @@ func (hd *TicketHandlerDefault) GetTicketsByCountry() http.HandlerFunc {
 func (hd *TicketHandlerDefault) GetAverageTicketsByCountry() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		country := chi.URLParam(r, "dest")
-
+		// CR2 - Aqui poderiamos adionar uma validacao para verificar se o parâmetro 'dest' está vazio ou inválido?
 		avg, err := hd.service.GetPercentageTicketsByDestinationCountry(country)
 		if err != nil {
 			response.Error(w, http.StatusNotFound, err.Error())
