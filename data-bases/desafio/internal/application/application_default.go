@@ -2,6 +2,7 @@ package application
 
 import (
 	"app/internal/handler"
+	"app/internal/loader"
 	"app/internal/repository"
 	"app/internal/service"
 	"database/sql"
@@ -24,7 +25,7 @@ type ConfigApplicationDefault struct {
 func NewApplicationDefault(config *ConfigApplicationDefault) *ApplicationDefault {
 	// default values
 	defaultCfg := &ConfigApplicationDefault{
-		Db:      nil,
+		Db:   nil,
 		Addr: ":8080",
 	}
 	if config != nil {
@@ -37,7 +38,7 @@ func NewApplicationDefault(config *ConfigApplicationDefault) *ApplicationDefault
 	}
 
 	return &ApplicationDefault{
-		cfgDb:      defaultCfg.Db,
+		cfgDb:   defaultCfg.Db,
 		cfgAddr: defaultCfg.Addr,
 	}
 }
@@ -83,6 +84,8 @@ func (a *ApplicationDefault) SetUp() (err error) {
 	hdInvoice := handler.NewInvoicesDefault(svInvoice)
 	hdSale := handler.NewSalesDefault(svSale)
 
+	dataloader := loader.NewDataLoader(rpCustomer, rpProduct, rpInvoice, rpSale)
+	dataloader.LoadAllDataFromJSON("./docs/db/json")
 	// routes
 	// - router
 	a.router = chi.NewRouter()
