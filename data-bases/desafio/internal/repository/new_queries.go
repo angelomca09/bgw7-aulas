@@ -21,7 +21,7 @@ const (
 
 	GetTop5SoldProducts = `
     SELECT
-    p.description, SUM(s.quantity) AS total
+    p.description, SUM(s.quantity) AS total_sold
     FROM products p
         INNER JOIN sales s ON p.id = s.product_id
     GROUP BY p.id
