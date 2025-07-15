@@ -36,7 +36,9 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println("Application all set up and ready to go!")
 	// - run
+	fmt.Println("Running application")
 	err = app.Run()
 	if err != nil {
 		fmt.Println(err)

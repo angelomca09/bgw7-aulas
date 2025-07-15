@@ -73,16 +73,19 @@ func (a *ApplicationDefault) SetUp() (err error) {
 	rpProduct := repository.NewProductsMySQL(a.db)
 	rpInvoice := repository.NewInvoicesMySQL(a.db)
 	rpSale := repository.NewSalesMySQL(a.db)
+	rpQueries := repository.NewQueriesRepositoryMySQL(a.db)
 	// - service
 	svCustomer := service.NewCustomersDefault(rpCustomer)
 	svProduct := service.NewProductsDefault(rpProduct)
 	svInvoice := service.NewInvoicesDefault(rpInvoice)
 	svSale := service.NewSalesDefault(rpSale)
+	svQueries := service.NewQueriesDefault(rpQueries)
 	// - handler
 	hdCustomer := handler.NewCustomersDefault(svCustomer)
 	hdProduct := handler.NewProductsDefault(svProduct)
 	hdInvoice := handler.NewInvoicesDefault(svInvoice)
 	hdSale := handler.NewSalesDefault(svSale)
+	hdQueries := handler.NewQueriesDefault(svQueries)
 
 	dataloader := loader.NewDataLoader(rpCustomer, rpProduct, rpInvoice, rpSale)
 	dataloader.LoadAllDataFromJSON("./docs/db/json")
@@ -116,6 +119,17 @@ func (a *ApplicationDefault) SetUp() (err error) {
 		r.Get("/", hdSale.GetAll())
 		// - POST /sales
 		r.Post("/", hdSale.Create())
+	})
+	a.router.Route("/queries", func(r chi.Router) {
+		// - GET /update-invoice-totals
+		r.Get("/update-invoice-totals", hdQueries.UpdateInvoiceTotals())
+		// - GET /total-condition
+		r.Get("/total-condition", hdQueries.GetTotalByCondition())
+		// - GET /top5-products
+		r.Get("/top5-products", hdQueries.GetTop5SoldProducts())
+		// - GET /top5-customers
+		r.Get("/top5-customers", hdQueries.GetTop5ActiveCustomersByTotalSpent())
+
 	})
 
 	return
