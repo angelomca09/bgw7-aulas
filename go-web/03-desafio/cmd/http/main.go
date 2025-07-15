@@ -11,6 +11,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 )
+// Angelo! Parabéns pelo desafio! O código é limpo, bem modularizado e de fácil leitura!
+
+// - Para os proximos projetos, recomendo extrair a configuração das rotas para um package ou função específica (por exemplo, routes.go).
+// Isso deixa o SetUp mais limpo e facilita reutilização, testes e manutenção.
+
+
 
 func main() {
 	// env

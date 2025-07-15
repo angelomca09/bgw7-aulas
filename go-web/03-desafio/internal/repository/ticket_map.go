@@ -50,7 +50,7 @@ func (r *RepositoryTicketMap) GetTicketsByDestinationCountry(ctx context.Context
 			t[k] = v
 		}
 	}
-
+    // CR1 - Não há validação se o parâmetro 'country' está vazio. Pode ser interessante validar entrada.
 	if len(t) == 0 {
 		err = fmt.Errorf("No Tickets found.")
 	}
