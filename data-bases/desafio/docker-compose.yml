@@ -37,7 +37,7 @@ services:
     volumes:
       - volumes:/var/lib/mysql
       - ./docs/db/mysql/database.sql:/docker-entrypoint-initdb.d/database.sql
-      - ./docs/db/mysql/data.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./docs/db/mysql/test.sql:/docker-entrypoint-initdb.d/test.sql
     networks:
       - desafio-implementation
     healthcheck:

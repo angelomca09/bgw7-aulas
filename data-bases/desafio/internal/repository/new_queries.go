@@ -24,7 +24,7 @@ const (
     p.description, SUM(s.quantity) AS total_sold
     FROM products p
         INNER JOIN sales s ON p.id = s.product_id
-    GROUP BY p.id
+    GROUP BY p.id, p.description
     ORDER BY total_sold DESC
     LIMIT 5;
     `
@@ -34,7 +34,7 @@ const (
     c.first_name, c.last_name, SUM(i.total) AS amount
     FROM customers c
         INNER JOIN invoices i ON c.id = i.customer_id
-    GROUP BY c.id
+    GROUP BY c.id, c.first_name, c.last_name
     ORDER BY amount DESC
     LIMIT 5;
     `
